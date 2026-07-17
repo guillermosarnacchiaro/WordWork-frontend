@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useChat } from '../context/ChatContext'
 import { login } from '../services/authService'
 import styles from './LoginPage.module.css'
+import BrandWordmark from '../components/BrandWordmark'
 
 export default function LoginPage() {
   const navigate = useNavigate()
@@ -37,8 +38,10 @@ export default function LoginPage() {
   return (
     <main className={styles.page}>
       <section className={styles.card} aria-labelledby="login-title">
-        <div className={styles.brand} aria-hidden="true">WW</div>
-        <p className={styles.appName}>WordWork</p>
+        <div className={`${styles.brand} ${styles.brandLarge}`}><img src="/wordwork-logo-v2.png" alt="Logo de WORDWORK" /></div>
+        <p className={`${styles.appName} ${styles.appNameLogo}`}>
+          <BrandWordmark />
+        </p>
         <h1 id="login-title" className={styles.title}>Iniciar sesión</h1>
         <p className={styles.subtitle}>Ingresá para continuar tus conversaciones.</p>
 

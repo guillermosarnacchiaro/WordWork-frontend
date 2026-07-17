@@ -137,11 +137,11 @@ El archivo `vercel.json` incluye la reescritura necesaria para que React Router 
 
 ## Usuario de prueba
 
-Las credenciales del usuario verificado se agregarán después de crear la base de datos de producción.
+Cuenta verificada disponible para probar la aplicación desplegada:
 
 ```text
-Correo: pendiente
-Contraseña: pendiente
+Correo: demo.wordwork@example.com
+Contraseña: WordWorkDemo2026!
 ```
 
 No se deben publicar secretos, contraseñas SMTP, cadenas de MongoDB ni valores de `JWT_SECRET`.

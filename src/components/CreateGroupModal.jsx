@@ -47,7 +47,7 @@ export default function CreateGroupModal({ users, onClose, onCreate }) {
           <div style={{ padding: '16px 20px' }}>
             <label style={{ display: 'grid', gap: '7px', color: '#3b4a54', fontSize: '13px', fontWeight: 600 }}>
               Nombre del grupo
-              <input value={name} onChange={(event) => setName(event.target.value)} maxLength="60" autoFocus placeholder="Ej: Equipo de trabajo" style={{ padding: '11px 13px', border: '1px solid #d1d7db', borderRadius: '8px', outlineColor: '#00a884' }} />
+              <input value={name} onChange={(event) => setName(event.target.value)} maxLength="60" autoFocus placeholder="Ej: Equipo de trabajo" style={{ padding: '11px 13px', border: '1px solid #d1d7db', borderRadius: '8px', outlineColor: 'var(--accent)' }} />
             </label>
           </div>
 
@@ -56,7 +56,7 @@ export default function CreateGroupModal({ users, onClose, onCreate }) {
             {users.map((user) => (
               <label key={user.userId} style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '11px 20px', cursor: 'pointer', borderBottom: '1px solid #f0f2f5' }}>
                 <input type="checkbox" checked={selected.includes(user.userId)} onChange={() => toggleUser(user.userId)} />
-                <span style={{ width: 38, height: 38, display: 'grid', placeItems: 'center', borderRadius: '50%', background: '#00a884', color: '#fff', fontSize: '12px', fontWeight: 700 }}>{user.avatar}</span>
+                <span style={{ width: 38, height: 38, display: 'grid', placeItems: 'center', borderRadius: '50%', background: 'var(--accent)', color: '#fff', fontSize: '12px', fontWeight: 700 }}>{user.avatar}</span>
                 <span style={{ color: '#111b21' }}>{user.name}</span>
               </label>
             ))}
@@ -64,8 +64,8 @@ export default function CreateGroupModal({ users, onClose, onCreate }) {
 
           {error && <p role="alert" style={{ margin: '12px 20px 0', color: '#b42318', fontSize: '13px' }}>{error}</p>}
           <footer className="modal-actions" style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px', padding: '16px 20px' }}>
-            <button type="button" onClick={onClose} style={{ padding: '10px 18px', borderRadius: '22px', color: '#008069', fontWeight: 700 }}>Cancelar</button>
-            <button type="submit" disabled={saving} style={{ padding: '10px 20px', borderRadius: '22px', background: '#00a884', color: '#fff', fontWeight: 700 }}>{saving ? 'Creando…' : 'Crear grupo'}</button>
+            <button type="button" onClick={onClose} style={{ padding: '10px 18px', borderRadius: '22px', color: 'var(--accent-dark)', fontWeight: 700 }}>Cancelar</button>
+            <button type="submit" disabled={saving} style={{ padding: '10px 20px', borderRadius: '22px', background: 'var(--accent)', color: '#fff', fontWeight: 700 }}>{saving ? 'Creando…' : 'Crear grupo'}</button>
           </footer>
         </form>
       </section>

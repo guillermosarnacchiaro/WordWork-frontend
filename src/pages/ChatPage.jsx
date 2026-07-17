@@ -33,6 +33,14 @@ function mapMessages(messages) {
   }))
 }
 
+function getFavoriteConversationIds() {
+  try {
+    return new Set(JSON.parse(localStorage.getItem('wordwork_favorite_chats')) || [])
+  } catch {
+    return new Set()
+  }
+}
+
 function useEsMobile() {
   const [esMobile, setEsMobile] = useState(window.innerWidth < 900)
   useEffect(() => {
@@ -53,6 +61,7 @@ export default function ChatPage() {
   const mostrarChat = Boolean(id)
   const [loadingUsers, setLoadingUsers] = useState(true)
   const [usersError, setUsersError] = useState('')
+  const [availableUsers, setAvailableUsers] = useState([])
 
   useEffect(() => {
     let cancelled = false
@@ -61,21 +70,44 @@ export default function ChatPage() {
       .then(([users, conversationData]) => {
         if (cancelled) return
         const conversations = conversationData.conversations
-        const privateContacts = users.map((user) => {
-          const conversation = conversations.find((item) => item.type === 'private' && item.other_user?.id === user.id)
-          return {
-            id: conversation?.id || `user:${user.id}`,
+        const favoriteIds = getFavoriteConversationIds()
+        const mappedUsers = users.map((user) => ({
+          id: `user:${user.id}`,
+          userId: user.id,
+          conversationId: null,
+          type: 'private',
+          name: user.display_name,
+          email: user.email,
+          avatar: user.display_name.slice(0, 2).toUpperCase(),
+          color: '#2563eb',
+          status: user.presence || 'offline',
+          availability: user.availability,
+          avatarUrl: user.avatar_url,
+          lastSeenAt: user.last_seen_at,
+          lastMessage: user.bio || user.email,
+          lastTime: '',
+          unread: 0,
+        }))
+        setAvailableUsers(mappedUsers)
+
+        const privateContacts = conversations
+          .filter((conversation) => conversation.type === 'private' && conversation.other_user)
+          .map((conversation) => {
+            const user = conversation.other_user
+            return {
+            id: conversation.id,
             userId: user.id,
-            conversationId: conversation?.id || null,
+            conversationId: conversation.id,
+            favorite: favoriteIds.has(conversation.id),
             type: 'private',
             name: user.display_name,
             avatar: user.display_name.slice(0, 2).toUpperCase(),
-            color: '#00a884',
+            color: '#2563eb',
             status: user.presence || 'offline',
             availability: user.availability,
             avatarUrl: user.avatar_url,
             lastSeenAt: user.last_seen_at,
-            lastMessage: conversation?.last_message?.content || user.bio || user.email,
+            lastMessage: conversation.last_message?.content || user.bio || user.email,
             lastTime: '',
             unread: 0,
           }
@@ -85,6 +117,7 @@ export default function ChatPage() {
           .map((conversation) => ({
             id: conversation.id,
             conversationId: conversation.id,
+            favorite: favoriteIds.has(conversation.id),
             type: 'group',
             name: conversation.name,
             avatar: 'GR',
@@ -149,11 +182,15 @@ export default function ChatPage() {
         || (await openPrivateConversation(contacto.userId)).conversation.id
 
       if (!contacto.conversationId) {
-        setContactos((current) => current.map((item) =>
-          item.userId === contacto.userId
-            ? { ...item, id: conversationId, conversationId }
-            : item,
-        ))
+        setContactos((current) => {
+          const openedContact = { ...contacto, id: conversationId, conversationId }
+          const exists = current.some((item) => item.userId === contacto.userId)
+          return exists
+            ? current.map((item) => item.userId === contacto.userId
+              ? { ...item, id: conversationId, conversationId }
+              : item)
+            : [openedContact, ...current]
+        })
       }
       seleccionarContacto(conversationId)
       const { messages } = await getMessages(conversationId)
@@ -182,6 +219,7 @@ export default function ChatPage() {
       lastMessage: `${conversation.participants.length} integrantes`,
       lastTime: '',
       unread: 0,
+      favorite: false,
     }
     setContactos((current) => [newGroup, ...current])
     setMensajes((current) => ({ ...current, [conversation.id]: [] }))
@@ -210,6 +248,7 @@ export default function ChatPage() {
         width: esMobile ? '100vw' : 'auto',
       }}>
         <Sidebar
+          users={availableUsers}
           onSeleccionar={handleSeleccionar}
           onCrearGrupo={handleCrearGrupo}
           loading={loadingUsers}

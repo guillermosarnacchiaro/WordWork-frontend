@@ -44,6 +44,10 @@ export function updateProfile(profile) {
   })
 }
 
+export function deleteAccount() {
+  return authorizedRequest('/api/users/me', { method: 'DELETE' })
+}
+
 export function touchPresence() {
   return authorizedRequest('/api/users/me/presence', { method: 'POST' })
 }

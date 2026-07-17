@@ -1,29 +1,32 @@
 export default function ContactItem({ contacto, isActive, onClick }) {
   return (
-    <button
+    <button className={`contact-item${isActive ? ' is-active' : ''}`}
       onClick={onClick}
       style={{
         display: 'flex', alignItems: 'center', gap: '12px',
         width: '100%', padding: '10px 16px',
         background: isActive ? 'var(--bg-active)' : 'transparent',
-        border: 'none', borderBottom: '1px solid var(--border)',
+        border: 'none', borderBottom: '1px solid var(--separator)',
         cursor: 'pointer', textAlign: 'left', transition: 'background 0.15s',
       }}
       onMouseEnter={e => { if (!isActive) e.currentTarget.style.background = 'var(--bg-hover)' }}
       onMouseLeave={e => { if (!isActive) e.currentTarget.style.background = 'transparent' }}
     >
-      {contacto.avatarUrl ? <img src={contacto.avatarUrl} alt="" style={{ width: '49px', height: '49px', borderRadius: '50%', objectFit: 'cover', flexShrink: 0 }} /> : <div style={{
+      <div style={{ position: 'relative', flexShrink: 0 }}>
+      {contacto.avatarUrl ? <img src={contacto.avatarUrl} alt="" style={{ width: '49px', height: '49px', borderRadius: '50%', objectFit: 'cover', display: 'block' }} /> : <div style={{
         width: '49px', height: '49px', borderRadius: '50%',
-        background: contacto.color, display: 'flex',
+        background: 'var(--accent)', display: 'flex',
         alignItems: 'center', justifyContent: 'center',
         fontWeight: '700', color: 'white', fontSize: '14px', flexShrink: 0,
       }}>
         {contacto.avatar}
       </div>}
+      {contacto.status === 'online' && <span aria-label="Conectado" style={{ position: 'absolute', right: 0, bottom: 1, width: 12, height: 12, borderRadius: '50%', background: 'var(--online)', border: '2px solid var(--bg-sidebar)' }} />}
+      </div>
 
       <div style={{ flex: 1, minWidth: 0 }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '2px' }}>
-          <span style={{ fontWeight: '400', color: 'var(--text-primary)', fontSize: '16px' }}>
+          <span style={{ fontWeight: '500', color: 'var(--text-name)', fontSize: '16px' }}>
             {contacto.name}
           </span>
           <span style={{ fontSize: '12px', color: contacto.unread > 0 ? 'var(--accent)' : 'var(--text-muted)' }}>

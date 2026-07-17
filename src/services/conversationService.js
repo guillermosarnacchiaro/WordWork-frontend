@@ -62,6 +62,10 @@ export function updateGroup(conversationId, updates) {
   })
 }
 
+export function deleteGroup(conversationId) {
+  return authorizedRequest(`/api/conversations/${conversationId}/group`, { method: 'DELETE' })
+}
+
 export function addGroupMember(conversationId, userId) {
   return authorizedRequest(`/api/conversations/${conversationId}/group/members`, {
     method: 'POST', body: JSON.stringify({ user_id: userId }),

@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { register, resendVerification } from '../services/authService'
 import styles from './LoginPage.module.css'
+import BrandWordmark from '../components/BrandWordmark'
 
 export default function RegisterPage() {
   const [form, setForm] = useState({ display_name: '', email: '', password: '', confirmPassword: '' })
@@ -85,8 +86,8 @@ export default function RegisterPage() {
   return (
     <main className={styles.page}>
       <section className={styles.card} aria-labelledby="register-title">
-        <div className={styles.brand} aria-hidden="true">WW</div>
-        <p className={styles.appName}>WordWork</p>
+        <div className={styles.brand}><img src="/wordwork-logo-v2.png" alt="Logo de WORDWORK" /></div>
+        <p className={styles.appName}><BrandWordmark /></p>
         <h1 id="register-title" className={styles.title}>Crear una cuenta</h1>
         <p className={styles.subtitle}>Registrate para empezar a conversar.</p>
 
