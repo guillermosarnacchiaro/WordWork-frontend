@@ -131,8 +131,8 @@ El archivo `vercel.json` incluye la reescritura necesaria para que React Router 
 
 ## Enlaces de entrega
 
-- Frontend desplegado: pendiente.
-- Backend desplegado: pendiente.
+- Frontend desplegado: https://wordwork-frontend.vercel.app
+- Backend desplegado: https://wordwork-backend.onrender.com
 - Repositorio backend: carpeta [`backend`](./backend/README.md) durante el desarrollo local.
 
 ## Usuario de prueba
