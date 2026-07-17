@@ -8,6 +8,7 @@ Permite registrarse, verificar el correo electrónico, iniciar sesión y convers
 
 - Registro de usuarios y verificación por correo electrónico.
 - Reenvío del enlace de verificación.
+- Recuperación segura de contraseña por correo electrónico.
 - Inicio de sesión mediante JWT.
 - Rutas privadas para usuarios autenticados.
 - Listado y búsqueda de usuarios verificados.
@@ -73,6 +74,8 @@ La aplicación estará disponible normalmente en `http://localhost:5173`.
 |---|---|---|
 | `/` | Público | Inicio de sesión |
 | `/registro` | Público | Registro de usuario |
+| `/recuperar-contrasena` | Público | Solicitud del enlace de recuperación |
+| `/restablecer-contrasena?token=...` | Público | Creación de una contraseña nueva |
 | `/chat` | JWT | Listado de conversaciones y usuarios |
 | `/chat/:id` | JWT | Conversación seleccionada |
 | `/profile` | JWT | Perfil del usuario |

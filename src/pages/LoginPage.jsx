@@ -75,6 +75,8 @@ export default function LoginPage() {
             />
           </label>
 
+          <Link className={styles.forgotLink} to="/recuperar-contrasena">¿Olvidaste tu contraseña? Recuperala</Link>
+
           {error && <p className={styles.alert} role="alert">{error}</p>}
 
           <button className={styles.button} type="submit" disabled={loading}>

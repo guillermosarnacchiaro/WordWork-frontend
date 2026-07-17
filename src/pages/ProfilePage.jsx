@@ -76,18 +76,18 @@ export default function ProfilePage() {
     <div className="private-page-layout" style={{ height: '100dvh', display: 'flex', overflow: 'hidden', background: 'var(--bg-app)' }}>
       <NavigationRail />
       <main className="profile-page" style={{ minWidth: 0, flex: 1, minHeight: '100dvh', overflowY: 'auto', display: 'grid', placeItems: 'center', padding: 'clamp(12px, 4vw, 48px)', background: 'var(--bg-app)', color: 'var(--text-primary)' }}>
-      <section className="profile-card" style={{ width: 'min(100%, 760px)', overflow: 'hidden', border: '1px solid var(--border)', borderRadius: '18px', background: 'var(--bg-sidebar)', boxShadow: '0 8px 30px rgba(17,27,33,.14)' }}>
-        <header className="profile-header" style={{ position: 'relative', minHeight: 94, display: 'grid', placeItems: 'center', padding: '20px 76px', background: 'linear-gradient(135deg, var(--navy), var(--accent))', color: '#fff' }}>
-          <button className="profile-back" onClick={() => navigate('/chat')} aria-label="Volver al chat" title="Volver al chat" style={{ position: 'absolute', left: 22, top: '50%', width: 48, height: 48, display: 'grid', placeItems: 'center', transform: 'translateY(-50%)', borderRadius: '50%', color: '#fff' }}><ArrowLeft size={32} strokeWidth={2} /></button>
-          <h1 style={{ margin: 0, fontSize: 'clamp(27px, 4vw, 32px)', fontWeight: 700, lineHeight: 1.2, letterSpacing: 0, textAlign: 'center' }}>Mi perfil</h1>
-        </header>
+      <section className="profile-card" style={{ position: 'relative', width: 'min(100%, 860px)', overflow: 'hidden', border: '1px solid var(--border)', borderRadius: '18px', background: 'var(--bg-sidebar)', boxShadow: '0 8px 30px rgba(17,27,33,.14)' }}>
+        <div className="profile-toolbar">
+          <button className="profile-back" onClick={() => navigate('/chat')} aria-label="Volver al chat" title="Volver al chat"><ArrowLeft size={27} strokeWidth={2} /></button>
+        </div>
 
-        <form className="profile-form" onSubmit={submit} style={{ width: 'min(100%, 620px)', display: 'grid', gap: '22px', margin: '0 auto', padding: 'clamp(24px, 5vw, 42px)' }}>
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '18px', textAlign: 'center' }}>
+        <form className="profile-form" onSubmit={submit}>
+          <div className="profile-main-fields">
+          <div className="profile-photo-panel">
             {form.avatar_url ? (
-              <img src={form.avatar_url} alt="Foto de perfil" style={{ width: 112, height: 112, objectFit: 'cover', borderRadius: '50%', border: '4px solid var(--accent-soft)' }} />
+              <img className="profile-avatar-large" src={form.avatar_url} alt="Foto de perfil" />
             ) : (
-              <div style={{ width: 112, height: 112, display: 'grid', placeItems: 'center', borderRadius: '50%', background: 'var(--accent)', color: '#fff', fontSize: '32px', fontWeight: 700 }}>{initials}</div>
+              <div className="profile-avatar-large profile-avatar-fallback">{initials}</div>
             )}
             <div style={{ width: '100%', display: 'grid', gap: '7px', textAlign: 'left' }}>
               <label htmlFor="avatar_url" style={{ color: 'var(--text-secondary)', fontSize: '13px', fontWeight: 650 }}>URL de la foto</label>
@@ -96,9 +96,12 @@ export default function ProfilePage() {
             </div>
           </div>
 
+          <div className="profile-edit-fields">
           <label style={fieldStyle}>Nombre<input name="display_name" value={form.display_name} onChange={change} minLength="2" maxLength="50" required style={inputStyle} /></label>
           <label style={fieldStyle}>Biografía<textarea name="bio" value={form.bio} onChange={change} maxLength="140" rows="3" style={{ ...inputStyle, resize: 'vertical' }} /><small style={{ color: 'var(--text-secondary)', textAlign: 'right' }}>{form.bio.length}/140</small></label>
           <label style={fieldStyle}>Disponibilidad<span style={{ position: 'relative', display: 'block' }}><select name="availability" value={form.availability} onChange={change} style={{ ...inputStyle, appearance: 'none', paddingRight: 44, cursor: 'pointer' }}>{Object.entries(availabilityLabels).map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select><ChevronDown size={20} strokeWidth={2} aria-hidden="true" style={{ position: 'absolute', top: '50%', right: 14, transform: 'translateY(-50%)', color: 'var(--icon-color)', pointerEvents: 'none' }} /></span></label>
+          </div>
+          </div>
 
           <div className="profile-meta">
             <div className="profile-meta__row"><strong>Registro</strong><span>{formatDate(usuario?.created_at, 'Fecha no disponible')}</span></div>
