@@ -1,204 +1,97 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useChat } from '../context/ChatContext'
+import { updateProfile } from '../services/userService'
+import { ArrowLeft, ChevronDown } from 'lucide-react'
+
+const availabilityLabels = {
+  available: 'Disponible',
+  busy: 'Ocupado',
+  away: 'Ausente',
+}
+
+function formatDate(value, fallback = 'Sin actividad registrada') {
+  if (!value) return fallback
+  return new Intl.DateTimeFormat('es-AR', { dateStyle: 'medium', timeStyle: 'short' }).format(new Date(value))
+}
 
 export default function ProfilePage() {
   const navigate = useNavigate()
-const { usuario } = useChat()
-const [form, setForm] = useState({ name: usuario.name || 'Sin nombre', status: 'Disponible' })
-  const [editandoNombre, setEditandoNombre] = useState(false)
-  const [editandoStatus, setEditandoStatus] = useState(false)
-  const [guardado, setGuardado] = useState(false)
-  const [esMobile, setEsMobile] = useState(window.innerWidth < 768)
+  const { usuario, setUsuario } = useChat()
+  const [form, setForm] = useState({
+    display_name: usuario?.display_name || '',
+    bio: usuario?.bio || '',
+    availability: usuario?.availability || 'available',
+    avatar_url: usuario?.avatar_url || '',
+  })
+  const [saving, setSaving] = useState(false)
+  const [message, setMessage] = useState('')
+  const [error, setError] = useState('')
 
-  useEffect(() => {
-    function handleResize() {
-      setEsMobile(window.innerWidth < 768)
+  function change(event) {
+    setForm((current) => ({ ...current, [event.target.name]: event.target.value }))
+    setMessage('')
+    setError('')
+  }
+
+  async function submit(event) {
+    event.preventDefault()
+    setSaving(true)
+    setError('')
+    try {
+      const { user } = await updateProfile(form)
+      setUsuario(user)
+      localStorage.setItem('wordwork_user', JSON.stringify(user))
+      setMessage('Perfil actualizado correctamente.')
+    } catch (requestError) {
+      setError(requestError.message)
+    } finally {
+      setSaving(false)
     }
-    window.addEventListener('resize', handleResize)
-    return () => window.removeEventListener('resize', handleResize)
-  }, [])
-
-  function handleChange(e) {
-    setForm({ ...form, [e.target.name]: e.target.value })
-    setGuardado(false)
   }
 
-  function handleSubmit(e) {
-    e.preventDefault()
-    setEditandoNombre(false)
-    setEditandoStatus(false)
-    setGuardado(true)
-    setTimeout(() => setGuardado(false), 2000)
-  }
+  const initials = form.display_name.slice(0, 2).toUpperCase() || 'WW'
 
   return (
-    <div style={{
-      display: 'flex',
-      height: '100vh',
-      background: '#f0f2f5',
-    }}>
+    <main className="profile-page" style={{ minHeight: '100dvh', display: 'grid', placeItems: 'center', padding: 'clamp(12px, 4vw, 48px)', background: 'var(--bg-app)', color: 'var(--text-primary)' }}>
+      <section className="profile-card" style={{ width: 'min(100%, 760px)', overflow: 'hidden', border: '1px solid var(--border)', borderRadius: '18px', background: 'var(--bg-sidebar)', boxShadow: '0 8px 30px rgba(17,27,33,.14)' }}>
+        <header className="profile-header" style={{ position: 'relative', minHeight: 94, display: 'grid', placeItems: 'center', padding: '20px 76px', background: '#00a884', color: '#fff' }}>
+          <button className="profile-back" onClick={() => navigate('/chat')} aria-label="Volver al chat" title="Volver al chat" style={{ position: 'absolute', left: 22, top: '50%', width: 48, height: 48, display: 'grid', placeItems: 'center', transform: 'translateY(-50%)', borderRadius: '50%', color: '#fff' }}><ArrowLeft size={32} strokeWidth={2} /></button>
+          <h1 style={{ margin: 0, fontSize: 'clamp(27px, 4vw, 32px)', fontWeight: 700, lineHeight: 1.2, letterSpacing: 0, textAlign: 'center' }}>Mi perfil</h1>
+        </header>
 
-      {/* Panel izquierdo */}
-      <div style={{
-        width: esMobile ? '100vw' : '420px',
-        background: 'white',
-        display: 'flex',
-        flexDirection: 'column',
-        flexShrink: 0,
-      }}>
-
-        {/* Header verde */}
-        <div style={{
-          background: '#00a884',
-          padding: '28px 24px 20px',
-          flexShrink: 0,
-        }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-            <button onClick={() => navigate('/chat')} style={{
-              color: 'white', display: 'flex', alignItems: 'center',
-              background: 'none', border: 'none', cursor: 'pointer',
-            }}>
-              <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor">
-                <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
-              </svg>
-            </button>
-            <span style={{ color: 'white', fontSize: '18px', fontWeight: '500' }}>Perfil</span>
-          </div>
-        </div>
-
-        {/* Avatar */}
-        <div style={{
-          display: 'flex', justifyContent: 'center',
-          padding: '32px 0 24px',
-          borderBottom: '1px solid #f0f2f5',
-        }}>
-          <div style={{ position: 'relative' }}>
-            <div style={{
-              width: '120px', height: '120px', borderRadius: '50%',
-              background: '#00a884', display: 'flex',
-              alignItems: 'center', justifyContent: 'center',
-              color: 'white', fontSize: '2.5rem', fontWeight: '700',
-            }}>
-              {form.name.slice(0, 2).toUpperCase()}
-            </div>
-            <button style={{
-              position: 'absolute', bottom: '4px', right: '4px',
-              width: '32px', height: '32px', borderRadius: '50%',
-              background: '#00a884', display: 'flex',
-              alignItems: 'center', justifyContent: 'center',
-              border: '2px solid white', cursor: 'pointer',
-            }}>
-              <svg viewBox="0 0 24 24" width="16" height="16" fill="white">
-                <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
-              </svg>
-            </button>
-          </div>
-        </div>
-
-        <form onSubmit={handleSubmit} style={{ flex: 1 }}>
-
-          {/* Nombre */}
-          <div style={{ padding: '20px 24px', borderBottom: '1px solid #f0f2f5' }}>
-            <p style={{ color: '#00a884', fontSize: '13px', fontWeight: '500', marginBottom: '8px' }}>
-              Nombre
-            </p>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              {editandoNombre ? (
-                <input
-                  name="name"
-                  value={form.name}
-                  onChange={handleChange}
-                  autoFocus
-                  style={{
-                    flex: 1, border: 'none', borderBottom: '2px solid #00a884',
-                    fontSize: '16px', color: '#111b21', outline: 'none',
-                    padding: '4px 0', background: 'transparent',
-                  }}
-                />
-              ) : (
-                <span style={{ fontSize: '16px', color: '#111b21' }}>{form.name}</span>
-              )}
-              <button type="button" onClick={() => setEditandoNombre(!editandoNombre)} style={{
-                color: '#54656f', display: 'flex', alignItems: 'center',
-                marginLeft: '12px',
-              }}>
-                <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
-                  <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
-                </svg>
-              </button>
+        <form className="profile-form" onSubmit={submit} style={{ width: 'min(100%, 620px)', display: 'grid', gap: '22px', margin: '0 auto', padding: 'clamp(24px, 5vw, 42px)' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '18px', textAlign: 'center' }}>
+            {form.avatar_url ? (
+              <img src={form.avatar_url} alt="Foto de perfil" style={{ width: 112, height: 112, objectFit: 'cover', borderRadius: '50%', border: '4px solid #d9fdd3' }} />
+            ) : (
+              <div style={{ width: 112, height: 112, display: 'grid', placeItems: 'center', borderRadius: '50%', background: '#00a884', color: '#fff', fontSize: '32px', fontWeight: 700 }}>{initials}</div>
+            )}
+            <div style={{ width: '100%', display: 'grid', gap: '7px', textAlign: 'left' }}>
+              <label htmlFor="avatar_url" style={{ color: 'var(--text-secondary)', fontSize: '13px', fontWeight: 650 }}>URL de la foto</label>
+              <input id="avatar_url" name="avatar_url" type="url" value={form.avatar_url} onChange={change} placeholder="https://..." style={inputStyle} />
+              <small style={{ color: 'var(--text-secondary)' }}>Por ahora usamos una imagen pública mediante URL.</small>
             </div>
           </div>
 
-          {/* Estado */}
-          <div style={{ padding: '20px 24px', borderBottom: '1px solid #f0f2f5' }}>
-            <p style={{ color: '#00a884', fontSize: '13px', fontWeight: '500', marginBottom: '8px' }}>
-              Info
-            </p>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              {editandoStatus ? (
-                <input
-                  name="status"
-                  value={form.status}
-                  onChange={handleChange}
-                  autoFocus
-                  style={{
-                    flex: 1, border: 'none', borderBottom: '2px solid #00a884',
-                    fontSize: '16px', color: '#111b21', outline: 'none',
-                    padding: '4px 0', background: 'transparent',
-                  }}
-                />
-              ) : (
-                <span style={{ fontSize: '16px', color: '#111b21' }}>{form.status}</span>
-              )}
-              <button type="button" onClick={() => setEditandoStatus(!editandoStatus)} style={{
-                color: '#54656f', display: 'flex', alignItems: 'center',
-                marginLeft: '12px',
-              }}>
-                <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
-                  <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
-                </svg>
-              </button>
-            </div>
+          <label style={fieldStyle}>Nombre<input name="display_name" value={form.display_name} onChange={change} minLength="2" maxLength="50" required style={inputStyle} /></label>
+          <label style={fieldStyle}>Biografía<textarea name="bio" value={form.bio} onChange={change} maxLength="140" rows="3" style={{ ...inputStyle, resize: 'vertical' }} /><small style={{ color: 'var(--text-secondary)', textAlign: 'right' }}>{form.bio.length}/140</small></label>
+          <label style={fieldStyle}>Disponibilidad<span style={{ position: 'relative', display: 'block' }}><select name="availability" value={form.availability} onChange={change} style={{ ...inputStyle, appearance: 'none', paddingRight: 44, cursor: 'pointer' }}>{Object.entries(availabilityLabels).map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select><ChevronDown size={20} strokeWidth={2} aria-hidden="true" style={{ position: 'absolute', top: '50%', right: 14, transform: 'translateY(-50%)', color: 'var(--icon-color)', pointerEvents: 'none' }} /></span></label>
+
+          <div className="profile-meta">
+            <div className="profile-meta__row"><strong>Registro</strong><span>{formatDate(usuario?.created_at, 'Fecha no disponible')}</span></div>
+            <div className="profile-meta__row"><strong>Última conexión</strong><span>{formatDate(usuario?.last_seen_at)}</span></div>
+            <div className="profile-meta__row"><strong>Estado</strong><span className="profile-meta__status"><i />{usuario?.presence === 'online' ? 'En línea' : 'Desconectado'}</span></div>
           </div>
 
-          {/* Botón guardar */}
-          {(editandoNombre || editandoStatus) && (
-            <div style={{ padding: '16px 24px' }}>
-              <button type="submit" style={{
-                width: '100%', padding: '10px',
-                background: '#00a884', border: 'none',
-                borderRadius: '24px', color: 'white',
-                fontSize: '15px', fontWeight: '600', cursor: 'pointer',
-              }}>
-                Guardar
-              </button>
-            </div>
-          )}
-
-          {guardado && (
-            <p style={{ textAlign: 'center', color: '#00a884', fontSize: '13px', padding: '8px' }}>
-              ✓ Cambios guardados
-            </p>
-          )}
-
+          {error && <p role="alert" style={{ margin: 0, color: '#b42318' }}>{error}</p>}
+          {message && <p role="status" style={{ margin: 0, color: '#008069' }}>{message}</p>}
+          <button disabled={saving} type="submit" style={{ justifySelf: 'center', minWidth: 190, padding: '12px 26px', borderRadius: '24px', background: '#00a884', color: '#fff', fontWeight: 700 }}>{saving ? 'Guardando…' : 'Guardar cambios'}</button>
         </form>
-      </div>
-
-      {/* Panel derecho vacío — solo desktop */}
-      {!esMobile && (
-        <div style={{
-          flex: 1, display: 'flex', flexDirection: 'column',
-          alignItems: 'center', justifyContent: 'center',
-          color: '#667781', gap: '12px',
-        }}>
-          <svg viewBox="0 0 24 24" width="80" height="80" fill="#ccd0d5">
-            <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
-          </svg>
-          <p style={{ fontSize: '16px', color: '#667781' }}>Perfil</p>
-        </div>
-      )}
-
-    </div>
+      </section>
+    </main>
   )
 }
+
+const fieldStyle = { display: 'grid', gap: '7px', color: 'var(--text-secondary)', fontSize: '13px', fontWeight: 650 }
+const inputStyle = { width: '100%', padding: '12px 14px', border: '1px solid var(--border)', borderRadius: '9px', background: 'var(--bg-input)', color: 'var(--text-primary)', fontSize: '15px', outlineColor: '#00a884' }

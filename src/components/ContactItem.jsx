@@ -12,14 +12,14 @@ export default function ContactItem({ contacto, isActive, onClick }) {
       onMouseEnter={e => { if (!isActive) e.currentTarget.style.background = 'var(--bg-hover)' }}
       onMouseLeave={e => { if (!isActive) e.currentTarget.style.background = 'transparent' }}
     >
-      <div style={{
+      {contacto.avatarUrl ? <img src={contacto.avatarUrl} alt="" style={{ width: '49px', height: '49px', borderRadius: '50%', objectFit: 'cover', flexShrink: 0 }} /> : <div style={{
         width: '49px', height: '49px', borderRadius: '50%',
         background: contacto.color, display: 'flex',
         alignItems: 'center', justifyContent: 'center',
         fontWeight: '700', color: 'white', fontSize: '14px', flexShrink: 0,
       }}>
         {contacto.avatar}
-      </div>
+      </div>}
 
       <div style={{ flex: 1, minWidth: 0 }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '2px' }}>
