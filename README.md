@@ -127,7 +127,7 @@ El frontend puede desplegarse en Vercel. Debe configurarse esta variable en el p
 VITE_API_URL=https://URL-DEL-BACKEND
 ```
 
-También se debe configurar una regla de reescritura para que React Router resuelva las rutas directamente desde el navegador.
+El archivo `vercel.json` incluye la reescritura necesaria para que React Router resuelva `/chat/:id`, `/profile` y las demás rutas al recargar la página.
 
 ## Enlaces de entrega
 
