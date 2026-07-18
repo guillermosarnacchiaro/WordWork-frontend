@@ -124,7 +124,7 @@ img, svg { max-width: 100%; }
 
 .chat-search-input::placeholder,
 .message-input::placeholder {
-  color: #a8b3c2;
+  color: #7c899b;
   opacity: 1;
 }
 
@@ -538,7 +538,8 @@ img, svg { max-width: 100%; }
 }
 
 :root[data-theme='dark'] .chat-search-input::placeholder,
-:root[data-theme='dark'] .message-input::placeholder {
+:root[data-theme='dark'] .message-input::placeholder,
+:root[data-theme='dark'] .group-name-input::placeholder {
   color: #cbd5e1;
 }
 

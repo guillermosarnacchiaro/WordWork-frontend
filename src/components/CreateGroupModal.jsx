@@ -45,13 +45,13 @@ export default function CreateGroupModal({ users, onClose, onCreate }) {
 
         <form onSubmit={submit} style={{ display: 'flex', minHeight: 0, flex: 1, flexDirection: 'column' }}>
           <div style={{ padding: '16px 20px' }}>
-            <label style={{ display: 'grid', gap: '7px', color: '#3b4a54', fontSize: '13px', fontWeight: 600 }}>
+            <label style={{ display: 'grid', gap: '7px', color: 'var(--text-secondary)', fontSize: '13px', fontWeight: 600 }}>
               Nombre del grupo
-              <input value={name} onChange={(event) => setName(event.target.value)} maxLength="60" autoFocus placeholder="Ej: Equipo de trabajo" style={{ padding: '11px 13px', border: '1px solid #d1d7db', borderRadius: '8px', outlineColor: 'var(--accent)' }} />
+              <input className="group-name-input" value={name} onChange={(event) => setName(event.target.value)} maxLength="60" autoFocus placeholder="Ej: Equipo de trabajo" style={{ padding: '11px 13px', border: '1px solid #d1d7db', borderRadius: '8px', outlineColor: 'var(--accent)' }} />
             </label>
           </div>
 
-          <p style={{ margin: 0, padding: '0 20px 8px', color: '#667781', fontSize: '13px' }}>Integrantes ({selected.length} seleccionados)</p>
+          <p style={{ margin: 0, padding: '0 20px 8px', color: 'var(--text-secondary)', fontSize: '13px', fontWeight: 600 }}>Integrantes ({selected.length} seleccionados)</p>
           <div style={{ minHeight: 120, overflowY: 'auto', borderBlock: '1px solid #e9edef' }}>
             {users.map((user) => (
               <label key={user.userId} style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '11px 20px', cursor: 'pointer', borderBottom: '1px solid #f0f2f5' }}>

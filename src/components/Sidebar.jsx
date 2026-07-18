@@ -5,7 +5,7 @@ import ContactItem from './ContactItem'
 import CreateGroupModal from './CreateGroupModal'
 import NewChatModal from './NewChatModal'
 import BrandWordmark from './BrandWordmark'
-import { LogOut, MessageCircle, Moon, Settings, SquarePen, Sun, UsersRound } from 'lucide-react'
+import { LogOut, MessageCircle, Moon, Search, Settings, SquarePen, Sun, UsersRound } from 'lucide-react'
 
 export default function Sidebar({ users = [], onSeleccionar, onCrearGrupo, loading = false, error = '' }) {
   const { contactos, contactoActivoId, usuario, setUsuario } = useChat()
@@ -164,12 +164,10 @@ export default function Sidebar({ users = [], onSeleccionar, onCrearGrupo, loadi
     <span style={{
       position: 'absolute', left: '12px',
       display: 'flex', alignItems: 'center', justifyContent: 'center',
-      color: '#54656f', pointerEvents: 'none',
-      top: '50%', transform: 'translateY(-50%)',
+      color: 'var(--icon-color)', pointerEvents: 'none',
+      top: 0, bottom: 0,
     }}>
-      <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
-        <path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
-      </svg>
+      <Search size={18} strokeWidth={1.9} aria-hidden="true" />
     </span>
 <input
   className="chat-search-input"
@@ -186,6 +184,7 @@ export default function Sidebar({ users = [], onSeleccionar, onCrearGrupo, loadi
     borderRadius: '20px',
     color: 'var(--text-primary)',
     fontSize: '14px',
+    lineHeight: '38px',
     outline: 'none',
   }}
 />
